@@ -10,7 +10,7 @@ const FetchCreators = gql`
         }
     }
 `
-const Queries = () => {
+const Courses = () => {
     const {loading, error, data} = useQuery(FetchCreators);
 
     if (loading) return <p> Loading...</p>
@@ -19,7 +19,7 @@ const Queries = () => {
     
     return (
     <div>
-        <h1> Queries </h1>
+        <h1> Courses </h1>
 
         {
             data.courses.map(item=>{
@@ -28,10 +28,9 @@ const Queries = () => {
                         <li> {item.description} </li>
                      </div>)
             })
-
         }
     </div>
     )
 }
 
-export default Queries
+export default Courses
