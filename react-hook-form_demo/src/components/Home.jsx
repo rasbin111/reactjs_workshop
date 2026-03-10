@@ -9,28 +9,43 @@ const Home = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      email: "test@email.com",
-    }
+      email: "",
+    },
   });
 
   const onSubmit = async (data) => {
-    try{
-      await new Promise((resolve)=>setTimeout(resolve, 1000)) // delay to demonstrate server request response delay
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // delay to demonstrate server request response delay
       console.log("Form Data: ", data);
-      throw new Error("Why?"); // Demonstration of error got from server
-    } catch(error){
-      console.log(error)
-      setError("root", {message: "This email is already taken:" })
+      throw new Error("Why?"); // Demonstration of error got from server, Forcing error for all case
+    } catch (error) {
+      console.log(error);
+      setError("root", { message: "This email is already taken:" });
     }
-  }
+  };
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input defaultValue="test" {...register("name")} />
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ display: "flex", flexDirection: "column", gap: "0.3rem"}}
+      >
+        <input defaultValue="test" {...register("name")} placeholder="Enter name" />
 
-        <input {...register("email", { required: true })} />
+        <input
+        placeholder="Enter Email"
+          {...register("email", {
+            required: "email required",
+            validate: (value) => {
+              if (!value.includes("@")) {
+                return "Invalid Email";
+              }
+              return true;
+            },
+          })}
+        />
         {errors.email && <span> {errors.email.message} </span>}
         <input
+        placeholder="Enter age"
           {...register("age", {
             required: "Age is required",
             min: { value: 18, message: "Must be at least 18" },
@@ -38,12 +53,15 @@ const Home = () => {
           })}
         />
         {errors.age && <span> {errors.age.message} </span>}
-        <input type="submit" disabled={isSubmitting} value={isSubmitting? "Submitting...": "Submit"}/>
-                {errors.root && <span> {errors.root.message} </span>}
-
+        <input
+          type="submit"
+          disabled={isSubmitting}
+          value={isSubmitting ? "Submitting..." : "Submit"}
+        />
+        {errors.root && <span> {errors.root.message} </span>}
       </form>
       {/*  Demo of render in simple react application */}
-      <About render={(data)=><p> Introduction: {data} </p>} /> 
+      <About render={(data) => <p> Introduction: {data} </p>} />
     </div>
   );
 };
