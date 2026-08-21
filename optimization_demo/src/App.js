@@ -1,74 +1,65 @@
 import React from 'react';
 
-function App(){
-    const [selectedNum, setSelectedNum] = React.useState(100);
+import Boxes from './Boxes';
 
-    const time = useTime();
 
-    const allPrimes = React.useMemo(() => {
-	const primes = [];
-	for(let counter = 2; counter < selectedNum; counter++){
-	    if (isPrime(counter)){
-		primes.push(counter);
-	    }
-	}
-	return primes
-    }, [selectedNum])
-    
+function App() {
+    const [name, setName] = React.useState('');
+    const [boxWidth, setBoxWidth] = React.useState(1);
+
+    const id = React.useId();
+
+    const boxes = React.useMemo(() => {
+        return [
+            {
+                flex: boxWidth,
+                background: "red",
+            },
+            {
+                flex: 3,
+                background: "blue",
+            },
+            {
+                flex: 1,
+                background: "yellow",
+            }
+        ];
+    }, [boxWidth]);
+
     return (
-	<div>
-	    <p>
-		{time.toString()}
-	    </p>
-	    <form>
-		<label htmlFor="num"> Your number: </label>
-		<input
-		    type="number"
-		    value={selectedNum}
-		    onChange={(event) => {
-			let num = Math.min(100_000, Number(event.target.value));
-			setSelectedNum(num);
-		    }}
-		/>
-	    </form>
-	    <p>
-		There are {allPrimes && allPrimes.length} prime(s) between 1 and {selectedNum}: {" "}
-		<span>
-		    {allPrimes && allPrimes.join(", ")}
-		</span>
-	    </p>
-    </div>
-  );
+        <>
+            <Boxes boxes={boxes} />
+            <section>
+                <div>
+                    <label htmlFor={`${id}-name`}>
+                        Name:
+                    </label>
+                    <input
+                        id={`${id}-name`}
+                        type="text"
+                        value={name}
+                        onChange={(event) => {
+                            setName(event.target.value)
+                        }}
+                    />
+                    <input
+                        id={`${id}-box-width`}
+                        type="range"
+                        min={1}
+                        max={5}
+                        step={0.01}
+                        value={boxWidth}
+                        onChange={(event) => {
+                            setBoxWidth(
+                                Number(event.target.value)
+                            );
+                        }}
+                    />
+                </div>
+            </section>
+        </>
+    )
+
 }
 
-function useTime() {
-    const [time, setTime] = React.useState(new Date());
-    React.useEffect(() => {
-	const intervalId = window.setInterval(() => {
-	    setTime(new Date());
-	}, 1000);
-	return () => {
-	    window.clearInterval(intervalId);
-	}
-    }, []);
-    return time;
-}
-
-function isPrime(n){
-  const max = Math.ceil(Math.sqrt(n));
-  
-  if (n === 2) {
-    return true;
-  }
-  
-  for (let counter = 2; counter <= max; counter++) {
-    if (n % counter === 0) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-
-export default App;
+export default App
